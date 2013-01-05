@@ -1,0 +1,29 @@
+{
+	"name": "grab-bag",
+	"version": "0.0.1",
+	"description": "Easily loads and stores system resources",
+	"keywords": ["properties", "json", "configuration", "settings", "resources"],
+	"author": {
+		"name": "Gabriel Llamas",
+		"email": "gaglekas@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/Gagle/Node-GrabBag.git"
+	},
+	"engines": {
+		"node": "*"
+	},
+	"dependencies": {
+		"error-provider": "*",
+		"properties": "*"
+	},
+	"devDependencies": {
+		"mocha-runner": "*"
+	},
+	"licenses": [{
+		"type": "MIT",
+		"url": "http://www.opensource.org/licenses/mit-license.html"
+	}],
+	"main": "lib/grab-bag"
+}
