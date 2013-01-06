@@ -134,11 +134,11 @@ To know what extensions are bound to default parsers/stringifiers, see [gb.ext](
 __gb.extensions__  
 Contains all the supported extensions and their associated parser/stringifier. By default the .properties parser/stringifier accepts "properties", "ini" and "conf" extensions, the json parser/stringifier, "json", and the JavaScript modules, "js".
 
-- gb.ext.properties === gb.types.PROPERTIES;
-- gb.ext.ini === gb.types.PROPERTIES;
-- gb.ext.conf === gb.types.PROPERTIES;
-- gb.ext.json === gb.types.JSON;
-- gb.ext.js === gb.types.JS;
+- gb.extensions.properties === gb.types.PROPERTIES;
+- gb.extensions.ini === gb.types.PROPERTIES;
+- gb.extensions.conf === gb.types.PROPERTIES;
+- gb.extensions.json === gb.types.JSON;
+- gb.extensions.js === gb.types.JS;
 
 <a name="get"></a>
 __gb.get([resource])__  
