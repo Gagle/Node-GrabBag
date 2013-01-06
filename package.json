@@ -18,9 +18,6 @@
 		"error-provider": "*",
 		"properties": "*"
 	},
-	"devDependencies": {
-		"mocha-runner": "*"
-	},
 	"licenses": [{
 		"type": "MIT",
 		"url": "http://www.opensource.org/licenses/mit-license.html"
