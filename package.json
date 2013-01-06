@@ -1,6 +1,6 @@
 {
 	"name": "grab-bag",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Easily loads and stores system resources",
 	"keywords": ["properties", "json", "configuration", "settings", "resources"],
 	"author": {
