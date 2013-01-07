@@ -5,11 +5,11 @@ _Node.js project_
 
 #### Easily loads and stores system resources ####
 
-Version: 0.0.2
+Version: 0.0.3
 
 This module can be used to ease the loading and storing process for system resources without the need to worry about how they are loaded and stored and how you save them in namespaces. A resource is anything you save in configuration files.
 
-#### Instalation ####
+#### Installation ####
 
 ```
 npm install grab-bag
@@ -69,7 +69,7 @@ The reader receives the path of the file that needs to be parsed, the extension 
 
 The writer receives the path of the file that needs to be stored, the extension of this file, the data to store and a callback to execute when the file is loaded. This callback expects an error as parameter.
 
-For example, we need to add support for YAML files. We're going to use the [yaml.js](#https://github.com/jeremyfa/yaml.js) moule to parse and stringify properties. Also, we want to parse/stringify the files as .properties files when the file has no extension.
+For example, we need to add support for YAML files. We're going to use the [yaml.js](#https://github.com/jeremyfa/yaml.js) module to parse and stringify properties. Also, we want to parse/stringify files with no extension as INI files.
 
 ```javascript
 var yaml = require ("yamljs");
@@ -94,37 +94,44 @@ var writer = function (file, extension, data, cb){
 //Defines a new parser/stringifier
 gb.define (["yml", "yaml"], reader, writer);
 
-//Uses the buil-in .properties parser/stringifier to read/write files with no extension
-gb.define ([""], gb.types.PROPERTIES.reader, gb.types.PROPERTIES.writer);
+//Uses the buil-in .ini parser/stringifier to read/write files with no extension
+gb.define ([""], gb.types.INI.reader, gb.types.INI.writer);
 ```
 
-If you don't need to stringify yaml properties, ignore the writer function:
+If you don't need to store yaml objects, ignore the writer function:
 
 ```javascript
 gb.define (["yml", "yaml"], reader);
 ```
 
-You can also re-define existing extensions, for example, we want to replace the json parser/stringifier:
+You can also re-define existing extensions, for example, we want to replace the INI parser/stringifier with the [ini](#https://github.com/isaacs/ini) module:
 
 ```javascript
+var ini = require ("ini");
+var gb = requir ("grab-bag");
+var fs = require ("fs");
+
 var reader = function (file, extension, cb){
-	//...
+	fs.readFile (file, "utf8", function (error, data){
+		if (error) return cb (error, null);
+		cb (null, ini.parse (data));
+	});
 };
 
 var writer = function (file, extension, data, cb){
-	//...
+	fs.writeFile (file, ini.stringify (data), "utf8", cb);
 };
 
-gb.define (["json"], reader, writer);
+gb.define (["ini"], reader, writer);
 ```
 
-Additionally, you can remove extensions from the set of extensions bound to a parser/stringifier. For example, we don't want to parse/stringify files with extension `conf`. Both reader and writer functions must be ignored to remove the extension.
+Additionally, you can remove extensions from the set of extensions bound to a parser/stringifier. For example, we don't want to parse/stringify files with extension `js`. Both reader and writer functions must be ignored to remove the extension.
 
 ```javascript
 gb.define (["conf"]);
 ```
 
-Now, if a file with `conf` extension is found you'll get an error when loading the files, `FILE_TYPE_NOT_SUPPORTED`. The loading or storing process are not finished, they continue until completion.
+Now, if a file with `conf` extension is found it won't be parsed.
 
 The reader must be given if a writer is passed, that is, before writing to a file, the data has to be loaded with the reader function.
 
@@ -135,8 +142,7 @@ __gb.extensions__
 Contains all the supported extensions and their associated parser/stringifier. By default the .properties parser/stringifier accepts "properties", "ini" and "conf" extensions, the json parser/stringifier, "json", and the JavaScript modules, "js".
 
 - gb.extensions.properties === gb.types.PROPERTIES;
-- gb.extensions.ini === gb.types.PROPERTIES;
-- gb.extensions.conf === gb.types.PROPERTIES;
+- gb.extensions.ini === gb.types.INI;
 - gb.extensions.json === gb.types.JSON;
 - gb.extensions.js === gb.types.JS;
 
@@ -234,10 +240,14 @@ __gb.types__
 Contains the default parsers/stringifiers. Every parser/stringifier has a "reader" and "writer" functions used to parse and store properties.
 
 - gb.types.PROPERTIES.reader, gb.types.PROPERTIES.writer
+- gb.types.INI.reader, gb.types.INI.writer
 - gb.types.JSON.reader, gb.types.JSON.writer
 - gb.types.JS.reader, gb.types.JS.writer
 
-The .properties parser/stringifier type uses the [properties](#https://github.com/Gagle/Node-Properties) module, the json one uses the built-in json parser/stringifier and the JavaScript uses `require` to load the file, that is, the script file need to export an object.
+The PROPERTIES type uses the [properties](#https://github.com/Gagle/Node-Properties) module with the variables feature enabled.
+The INI type uses the [properties](#https://github.com/Gagle/Node-Properties) module with the variables and sections features enabled.
+The JSON type uses the built-in json parser/stringifier.
+The JS type uses the `require` function to load the file, the script file need to export an object. Take into account that `require` is synchronous and therefore it will block the entire event loop.
 
 The custom parser/stringifier defined with [gb.define()](#define) will be stored here with the name `CUSTOMX`, where `X` is an incremental number that starts at 0.
 

@@ -1,5 +1,9 @@
+v0.0.3 (07 Jan 2013)
+	Added INI parser/stringifier.
+	Removed FILE_TYPE_NOT_SUPPORTED error.
+
 v0.0.2 (06 Jan 2013)
-	Added ttl and more features.
+	Added some features.
 	
 v0.0.1 (05 Jan 2013)
 	First commit.
