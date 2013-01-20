@@ -1,8 +1,9 @@
 {
 	"name": "grab-bag",
-	"version": "0.0.3",
+	"version": "0.1.0",
 	"description": "Easily loads and stores system resources",
-	"keywords": ["properties", "json", "configuration", "settings", "resources"],
+	"keywords": ["properties", "json", "configuration", "settings", "resources",
+			"namespace", "file"],
 	"author": {
 		"name": "Gabriel Llamas",
 		"email": "gaglekas@gmail.com"
