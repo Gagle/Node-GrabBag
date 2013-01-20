@@ -69,7 +69,7 @@ box.load ("conf", function (error){
 - [GrabBag#name()](#name)
 - [GrabBag#remove([paths])](#remove)
 - [GrabBag#set(path, obj[, type])](#set)
-- [GrabBag#store([paths], callback)](#store)
+- [GrabBag#store([pa], callback)](#store)
 
 <a name="create"></a>
 __gb.create([name])__  
