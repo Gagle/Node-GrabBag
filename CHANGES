@@ -1,4 +1,4 @@
-v0.1.0 (18 Jan 2013)
+v0.1.0 (20 Jan 2013)
 	Changed the way a grab bag is created. Now an instance has to be instantiated,
 		that is, multiple boxes or categories can be created.
 	Added "type" parameter to "load()".
