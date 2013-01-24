@@ -7,7 +7,7 @@ _Node.js project_
 
 Version: 0.1.0
 
-### TODO: Add illustrative imagine to help understand the idea of this module so you can manage your configuration files easily. Add a real example.
+### TODO: Add illustrative imagine to help understand the idea of this module so you can manage your configuration files easily. Add a real example. Improve readme.
 
 The main goal of this module is to ease the loading and storing process of system resources without the need to worry about how they are loaded and stored and where they are saved into memory, configure the I/O calls once and just load and store. A resource is anything you save in files, typically configuration data. A grab bag, or simply a box, provides a centralized and well organized place that grants to you a better control over your files.
 
