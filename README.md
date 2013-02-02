@@ -5,17 +5,25 @@ _Node.js project_
 
 #### Easily loads and stores system resources ####
 
-Version: 0.1.0
-
-### TODO: Add illustrative imagine to help understand the idea of this module so you can manage your configuration files easily. Add a real example. Improve readme.
+Version: 0.1.1
 
 The main goal of this module is to ease the loading and storing process of system resources without the need to worry about how they are loaded and stored and where they are saved into memory, configure the I/O calls once and just load and store. A resource is anything you save in files, typically configuration data. A grab bag, or simply a box, provides a centralized and well organized place that grants to you a better control over your files.
 
-Because encapsulation and abstraction is an art this module is the glue between your application and your configuration files. Useful when you have to load, update and store a lot of files with the minimum dependencies (loosely coupled).
+Because encapsulation and abstraction is an art this module is the glue between your application and your configuration files. Useful when you have to load, update and store a lot of files with the minimum dependencies (loosely coupled). If you only want to load a couple of files this module is not made for you, it was thought for big projects with a lot of externalized data to provide an abstraction layer between the data and the way it is accessed.
 
 Put it simply, you need to work with localized strings and you need to load, update and store some configuration files. You need to save them somewhere for a later use. You could create a module called "i18n" holding and managing all your language files. That's fine. Furthermore, your application needs to externalize some configuration properties so you could create another module called "conf" trying to encapsulate the way you load and store your files, or simply you could just load and store the configuration properties when you need to do so if encapsulation is not one of your strengths.
 
-Have you thought the format of the properties? You have to decide a format because you need to load and store them to files. Typically you'll use a json, ini or yaml file. Perhaps you don't need a complex format and you simply store the information in different lines. These methods are highly coupled with a lot of dependencies. If you need to change how you load and store the properties there's a big risk to break your code accidentally. With a grab bag you must define once how the files are loaded and stored and then you can abstract from this and just call to [load()](#load) or [store()](#store).
+Have you thought the format of the data? You have to decide a format because you need to load and store them into files. Typically you'll use a json, ini or yaml file. Perhaps you don't need a complex format and you simply store the information in different lines. These methods are highly coupled with a lot of dependencies. If you need to change how you load and store the properties there's a big risk to break your code accidentally.
+
+This is the way a grab bag works:
+
+<p align="center">
+	<img src="http://image.gxzone.com/images/7/a/7ae3a2a19c6.png" alt="diagram"/>
+</p>
+
+Instead of calling the parser/stringifier or just read/write the files you talk directly with the grab bag. To fill it you can load the files from disk ([load()](#load)) or just save in-memory objects ([set()](#set)). Then, you can retrieve and use them in your application ([get()](#get)) and persist the changes if you modify them ([store()](#store)).
+
+The best part of this is that you configure how the data is loaded and stored into disk only once, so if you need to change anything related with the format it's very easy and safe to do the changes without affecting the whole application, therefore reducing the refactoring potential damage.
 
 
 #### Installation ####
@@ -26,7 +34,7 @@ npm install grab-bag
 
 #### Example ####
 
-You need to load a directory named `conf`, a place where you put all your system configuration files. Inside it you have two files named `a.json` and `b.properties`. By default, you can only have json, key-value properties (.properties and INI files) and JavaScript modules but you can extend and overwrite the list defining your own readers and writers. Then you only need to do (assuming `conf` is inside `.`):
+You need to load a directory named `conf`, a place where you put all your system configuration files. Inside it you have two files named `a.json` and `b.properties`. By default, you can only have .json, .propertis and .ini files but you can extend and overwrite the list defining your own readers and writers. Then you only need to do (assuming `conf` is inside `.`):
 
 ```javascript
 var gb = require ("grab-bag");
@@ -52,7 +60,7 @@ box.load ("conf", function (error){
 	//Modifies a.json and b.properties
 	doSomething (conf);
 	
-	//Stores all the loaded resources to their files
+	//Stores all the loaded resources to their files (overwriting them)
 	box.store (function (error){
 		if (error) return console.log (error);
 	});
@@ -79,11 +87,11 @@ Creates a new GrabBag with an optional name.
 
 <a name="define"></a>
 __gb.define(extensions, io)__  
-Defines a new parser/stringifier for every extension.
+Defines a new parser/stringifier for every given extension.
 
 The "extensions" parameter is an array of strings with all the extensions that will be used with the given reader and writer functions.
 
-The "reader" and "writer" parameters are callbacks that are executed when you load or store the files.
+The "io" parameter is an object with the properties "reader" and "writer". This properties are the callbacks that are executed when you load or store the files. They are optional.
 
 The reader receives the path of the file that needs to be parsed, the extension of this file and a callback to execute when the file is loaded. This callback expects an error and the loaded data as parameters.
 
@@ -94,7 +102,6 @@ Default extensions and their associated parser/stringifier are:
 - "properties": gb.types.PROPERTIES
 - "ini": gb.types.INI
 - "json": gb.types.JSON
-- "js": gb.types.JS
 
 For example, we need to add support for YAML files. We're going to use the [yaml.js](#https://github.com/jeremyfa/yaml.js) module to parse and stringify properties. Furthermore, we want to parse/stringify files with no extension as INI files.
 
@@ -124,7 +131,7 @@ gb.define (["yml", "yaml"], {
 	writer: writer
 });
 
-//Uses the buil-in ini parser/stringifier to read/write files with no extension
+//Uses the built-in ini parser/stringifier to read/write files with no extension
 gb.define ([""], gb.types.INI);
 ```
 
@@ -162,13 +169,13 @@ gb.define (["ini"], {
 
 <a name="remove-gb"></a>
 __gb.remove(extensions)__  
-Removes extensions from the set of extensions bound to a parser/stringifier. For example, we don't want to parse/stringify files with extension `js`.
+Removes extensions from the set of extensions bound to a parser/stringifier. For example, we don't want to parse/stringify files with `ini` extension.
 
 ```javascript
-gb.remove (["js"]);
+gb.remove (["ini"]);
 ```
 
-Now, if a file with `js` extension is found it will be ignored.
+Now, if a file with a `ini` extension is found it will be ignored.
 
 <a name="types"></a>
 __gb.types__  
@@ -177,25 +184,24 @@ Contains the default parsers/stringifiers. Every parser/stringifier has a "reade
 - gb.types.PROPERTIES.reader, gb.types.PROPERTIES.writer
 - gb.types.INI.reader, gb.types.INI.writer
 - gb.types.JSON.reader, gb.types.JSON.writer
-- gb.types.JS.reader, gb.types.JS.writer
 
 The PROPERTIES type uses the [properties](#https://github.com/Gagle/Node-Properties) module with the variables feature enabled.  
 The INI type uses the [properties](#https://github.com/Gagle/Node-Properties) module with the variables and sections features enabled.  
-The JSON type uses the built-in json parser/stringifier.  
-The JS type uses the `require` function to load the file, the script needs to export an object. Take into account that `require` is synchronous and therefore it will block the entire event loop.
+The JSON type uses the Node.js built-in json parser/stringifier.  
 
 The custom parser/stringifier defined with [gb.define()](#define) will be stored here with the name `CUSTOMX`, where `X` is an incremental number that starts at 0.
 
-Default extensions and their associated parser/stringifier are:
+Default extensions and their associated type are:
 
 - "properties": gb.types.PROPERTIES
 - "ini": gb.types.INI
 - "json": gb.types.JSON
-- "js": gb.types.JS
 
 <a name="get"></a>
 __GrabBag#get([path])__  
-Returns a resource given a path. If no path is given the function returns all the resources:
+Returns a resource given a path. If no path is given the function returns all the resources.
+
+Example:
 
 ```
 ./
@@ -233,7 +239,7 @@ Returns a resource given a path. If no path is given the function returns all th
 ```
 //e.json
 {
-	"d": 4
+	"e": 4
 }
 ```
 
@@ -245,7 +251,7 @@ box.load (["a", "e.json"], function (error){
 	
 	console.log (box.get ("a/b/b.json").a); //Prints: 2
 	console.log (box.get ().a.b["b.json"].a); //Prints: 2
-	console.log (box.get ("e.json").d); //Prints: 4
+	console.log (box.get ("e.json").e); //Prints: 4
 	console.log (require ("util").inspect (box.get (), true, null));
 	
 	/*
@@ -269,11 +275,22 @@ box.load (["a", "e.json"], function (error){
 			}
 		},
 		"e.json": {
-			d: 4
+			e: 4
 		}
 	}
 	*/
 });
+```
+
+The paths are relative to the current working directory but they must not begin with `.` or `..`.
+
+```javascript
+//This is valid
+gb.create ().get ("a");
+gb.create ().get ("b/c");
+//This is not valid
+gb.create ().get ("./a");
+gb.create ().get ("../a");
 ```
 
 <a name="ignore"></a>
@@ -317,7 +334,7 @@ box.load ("a", function (error){
 
 <a name="load"></a>
 __GrabBag#load(path[, type], callback)__  
-Loads resources into memory. The "path" parameter can be a string with the path to a file or directory or an array of paths. If a path points to a directory, the directory is read recursively and all the sub-directories and supported files are loaded. The callback with an error parameter is executed on completion. See [get()](#get) example.
+Loads resources from disk. The "path" parameter can be a string with the path to a file or directory or an array of paths. If a path points to a directory, the directory is read recursively and all the sub-directories and supported files are loaded. The callback receives an error parameter and is executed on completion. See [get()](#get) example.
 
 How can we load files with no extension without loading other specific files, for example readme files?
 
@@ -357,7 +374,7 @@ box.load (["conf/file1", "conf/file2", "system/boot.properties"], function (erro
 });
 ```
 
-But this has a problem because if you need to load a lot of files you have to include them in the array.
+But this has a problem because if you need to load a lot of files you have to include them manually in the array and they could have a different format so you can't load them with the same parser.
 
 A better solution consists of using the [ignore()](#ignore) function. Just ignore the files that you don't want to load or store:
 
@@ -371,7 +388,7 @@ box.load (["conf", "system"], function (error){
 });
 ```
 
-The optional "type" parameter is the type of the content of the file or files if the path is a directory. This parameter is typically used when you want to load a file that has an extension that is not found in the set of default extensions but you don't want to define a new type because you have multiple files with the same extension but with different format, like the previous scenario.
+The optional "type" parameter is the type of the content of the file, or files if the path is a directory. This parameter is typically used when you want to load a file that has an extension that is not found in the set of default extensions but you don't want to define a new type because you have multiple files with the same extension but with different format, like the previous scenario.
 
 For example, we want to load a file with a txt extension that has a custom format (line separated values).
 
@@ -419,13 +436,38 @@ box.load ("file", gb.types.PROPERTIES, function (error){
 });
 ```
 
+Load multiple files at once each of them with a different parser/stringifier is also possible:
+
+```javascript
+//file will be parsed as a .properties file
+var box = gb.create ();
+
+var type1 = {
+	reader: function (file, extension, cb){
+		//...
+	}
+};
+
+var files = {
+	"a/file1": gb.types.PROPERTIES, //file1 loaded/stored as a .properties file
+	"a/file2": type1, //file2 loaded with the custom reader
+	"file3.json": null, //file3 is loaded/stored as a .json file because it has a .json extension
+	"file4": null, //file4 is ignored because it has no extension and the empty extension has not been defined as a type
+	"b/dir1": null //The dir1 directory is read
+};
+
+box.load (files, function (error){
+	if (error) return console.log (error);
+});
+```
+
 <a name="name"></a>
 __GrabBag#name()__  
 Returns the name of the grab bag.
 
 <a name="remove"></a>
 __GrabBag#remove([paths])__  
-Removes a resource or resources if the path points to a directory. The "paths" parameter can be a string or an array of paths. Take into account that the resource (JavaScript object) won't be freed if you have a reference pointing to it. In fact, this function calls to `delete` to remove the resource. Be aware of this if you don't want memory leaks.
+Removes a resource, or resources if the path points to a directory. The "paths" parameter can be a string or an array of paths. Take into account that the resource (JavaScript object) won't be freed if you have a reference pointing to it. In fact, this function calls to `delete` to remove the resource. Be aware of this if you don't want memory leaks.
 
 
 ```
@@ -443,7 +485,7 @@ Removes a resource or resources if the path points to a directory. The "paths" p
 ```
 //e.json
 {
-	"d": 4
+	"e": 4
 }
 ```
 
@@ -462,7 +504,7 @@ box.load (["a", "e.json"], function (error){
 	
 	{
 		"e.json": {
-			d: 4
+			e: 4
 		}
 	}
 	*/
@@ -475,12 +517,12 @@ The paths are relative to the current working directory but they must not begin 
 //This is valid
 gb.create ().remove (["a", "b/c"]);
 //This is not valid
-gb.create ().remove (["./a", "../b"]);
+gb.create ().remove (["./a", "../a"]);
 ```
 
 <a name="set"></a>
-__GrabBag#set(path, obj[, type])__  
-Saves an object into the set of resources. Instead of loading a file to populate the set of resources you can populate it with in-memory objects. Make sure to not to save a reference to the object in you application because if you want to free the object you'll produce a memory leak.
+__GrabBag#set(path[, type], obj)__  
+Saves an object into the grab bag. Instead of loading a file from disk to fill the grab bag you can populate it with in-memory objects. Make sure to not to maintain a reference to the object you want to put in the grab bag because if you want to free the object you'll produce a memory leak. Reminder: an object is garbage collected if it is not referenced by any variable.
 
 The path is relative to the current working directory but it must not begin with `.` or `..`.
 
@@ -494,7 +536,35 @@ gb.create ().set ("../a.ini", { p: 1 });
 
 <a name="store"></a>
 __GrabBag#store([paths], callback)__  
-Stores resources into their files. The "paths" parameters can be a string with the path to a file or directory or an array of paths. If an array is passed all the resources are stored in parallel. If the path points to a directory, all the resources that has been loaded into memory previously that belongs to this path will be stored recursively, that is, if an in-memory directory is found, all the properties are stored to their files. The callback with an error parameter is executed on completion, if any. If "paths" is not passed, stores all the loaded resources.
+Stores the resources into their files. The "paths" parameters can be a string with the path to a file or directory or an array of paths. If an array is passed all the resources are stored in parallel. If the path points to a directory, all the resources that has been previously loaded into memory that belongs to this path will be stored recursively. The callback with an error parameter is executed on completion, if any. If "paths" is not passed, stores all the loaded resources.
+
+Example:
+
+
+```
+./
+	a/
+		a.json
+		b/
+			b.json
+			c/
+				c.properties
+```
+
+```javascript
+var box = gb.create ();
+
+box.load ("a", function (error){
+	if (error) return console.log (error);
+	
+	box.store ("b", function (error){
+		if (error) return console.log (error);
+		
+		//"b" points to a directory so b.json and c.properties have been updated
+	});
+});
+```
+
 
 The paths are relative to the current working directory but they must not begin with `.` or `..`.
 
