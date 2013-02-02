@@ -75,10 +75,10 @@ box.load ("conf", function (error){
 - [gb.types](#types)
 - [GrabBag#get([path])](#get)
 - [GrabBag#ignore(paths)](#ignore)
-- [GrabBag#load(path[, type], callback)](#load)
+- [GrabBag#load(paths[, type], callback)](#load)
 - [GrabBag#name()](#name)
 - [GrabBag#remove([paths])](#remove)
-- [GrabBag#set(path, obj[, type])](#set)
+- [GrabBag#set(path[, type], obj)](#set)
 - [GrabBag#store([paths], callback)](#store)
 
 <a name="create"></a>
@@ -333,7 +333,7 @@ box.load ("a", function (error){
 ```
 
 <a name="load"></a>
-__GrabBag#load(path[, type], callback)__  
+__GrabBag#load(paths[, type], callback)__  
 Loads resources from disk. The "path" parameter can be a string with the path to a file or directory or an array of paths. If a path points to a directory, the directory is read recursively and all the sub-directories and supported files are loaded. The callback receives an error parameter and is executed on completion. See [get()](#get) example.
 
 How can we load files with no extension without loading other specific files, for example readme files?
