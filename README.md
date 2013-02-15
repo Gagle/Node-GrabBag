@@ -557,10 +557,10 @@ var box = gb.create ();
 box.load ("a", function (error){
 	if (error) return console.log (error);
 	
-	box.store ("b", function (error){
+	box.store ("a/b", function (error){
 		if (error) return console.log (error);
 		
-		//"b" points to a directory so b.json and c.properties have been updated
+		//"b" points to a directory so b.json and c.properties have been stored
 	});
 });
 ```
