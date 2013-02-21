@@ -436,10 +436,9 @@ box.load ("file", gb.types.PROPERTIES, function (error){
 });
 ```
 
-Load multiple files at once each of them with a different parser/stringifier is also possible:
+Loading multiple files at once each of them with a different parser/stringifier is also possible:
 
 ```javascript
-//file will be parsed as a .properties file
 var box = gb.create ();
 
 var type1 = {
