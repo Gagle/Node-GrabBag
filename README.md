@@ -34,7 +34,7 @@ npm install grab-bag
 
 #### Example ####
 
-You need to load a directory named `conf`, a place where you put all your system configuration files. Inside it you have two files named `a.json` and `b.properties`. By default, you can only have .json, .propertis and .ini files but you can extend and overwrite the list defining your own readers and writers. Then you only need to do (assuming `conf` is inside `.`):
+You need to load a directory named `conf`, a place where you put all your system configuration files. Inside it you have two files named `a.json` and `b.properties`. By default, you can only have .json, .properties and .ini files but you can extend and overwrite the list defining your own readers and writers. Then you only need to do (assuming `conf` is inside `.`):
 
 ```javascript
 var gb = require ("grab-bag");
