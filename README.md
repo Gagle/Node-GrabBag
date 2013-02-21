@@ -53,8 +53,8 @@ box.load ("conf", function (error){
 	
 	/*
 	Another way to get resources is through paths
-	var a = gb.get ("conf/a.json");
-	var b = gb.get ("conf/b.properties");
+	var a = box.get ("conf/a.json");
+	var b = box.get ("conf/b.properties");
 	*/
 	
 	//Modifies a.json and b.properties
