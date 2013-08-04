@@ -10,14 +10,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/Gagle/Node-GrabBag.git"
+		"url": "git://github.com/Gagle/node-grab-bag.git"
 	},
 	"engines": {
 		"node": "*"
 	},
 	"dependencies": {
 		"error-provider": "*",
-		"properties": "*"
+		"properties": "0.3.x"
 	},
 	"licenses": [{
 		"type": "MIT",
