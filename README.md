@@ -1,3 +1,6 @@
+### THIS MODULE IS DEPRECATED, NO MORE FIXES, NO MORE ADDITIONS
+### [seraphim](https://github.com/gagle/node-seraphim) is the next configuration loader.
+
 grab-bag
 ========
 
